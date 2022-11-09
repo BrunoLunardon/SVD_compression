@@ -1,5 +1,6 @@
 import numpy as np
 from PIL import Image
+import matplotlib.pyplot as plt
 import os
 
 def open_image(image_path):
@@ -53,7 +54,6 @@ def compress_channel(channel, k):
     :return: the compressed image
     :rtype: numpy.ndarray
     """
-    
     j=int(min(channel.shape)*k)
     U, S, V = np.linalg.svd(channel, full_matrices=False)
     compressed_channel = np.dot(U[:, :j], np.dot(np.diag(S[:j]), V[:j, :]))
@@ -92,19 +92,92 @@ def matrix_to_image(matrix):
 
 #combine_image(r,g,b).show()
 
-with os.scandir('img_for_compression') as entries:
-    for entry in entries:
-        if entry.is_file():
-            red_channel, green_channel, blue_channel = split_image(open_image(entry.path))
-            r=compress_channel(red_channel, 100)
-            g=compress_channel(green_channel, 100)
-            b=compress_channel(blue_channel, 100)
-            combine_image(r,g,b).save('compressed_images/compressed_'+entry.name)
+# for k in [0.01, 0.05, 0.1, 0.15, 0.25]:
+#     for entry in ['img_for_compression/mulher_colorida.jpg', 'img_for_compression/senhor.jpg', 'img_for_compression/galaxia.jpg', "img_for_compression/new_york.jpg"]:
+#         red_channel, green_channel, blue_channel = split_image(open_image(entry))
+#         r=compress_channel(red_channel, k)
+#         g=compress_channel(green_channel, k)
+#         b=compress_channel(blue_channel, k)
+#         combine_image(r,g,b).save("compressed_images/_"+str(k)+entry[19:])
 
 
-#make the plots of cumulative sums
-#make the plots of logs of singular values
+# U,S,V=np.linalg.svd(open_image_bw('img_for_compression/rio.jpg'),full_matrices=False)
+# S=np.diag(S)
 
-img=compress_channel(open_image_bw('img_for_compression/dogs.png'), 0.1)
-a=matrix_to_image(img)
-a.save('compressed_images/compressed_dogs.png')
+# plt.figure(1)
+# plt.title("Valores Singulares")
+# plt.semilogy(np.diag(S))
+# plt.savefig(f'Plots/singular_values_rio.jpg')
+
+# plt.figure(2)
+# plt.title('Soma cumulativa dos valores singulares')
+# plt.plot(np.cumsum(np.diag(S))/np.sum(np.diag(S)))
+# plt.savefig(f'Plots/rio_cumulative.jpg')
+
+
+# U,S,V=np.linalg.svd(open_image_bw('img_for_compression/new_york.jpg'),full_matrices=False)
+# S=np.diag(S)
+
+# plt.figure(3)
+# plt.title("Valores Singulares")
+# plt.semilogy(np.diag(S))
+# plt.savefig(f'Plots/singular_values_york.jpg')
+
+# plt.figure(4)
+# plt.title('Soma cumulativa dos valores singulares')
+# plt.plot(np.cumsum(np.diag(S))/np.sum(np.diag(S)))
+# plt.savefig(f'Plots/york_cumulative.jpg')
+
+# for k in [0.05,0.1,0.15,0.25]:
+#     with os.scandir('img_for_compression') as entries:
+#         for entry in entries:
+#             if entry.is_file():
+#                 red_channel, green_channel, blue_channel = split_image(open_image(entry.path))
+#                 r=compress_channel(red_channel, k)
+#                 g=compress_channel(green_channel, k)
+#                 b=compress_channel(blue_channel, k)
+#                 combine_image(r,g,b).save(f"compressed_images/_{k}_"+entry.name)
+
+# with os.scandir('img_for_compression') as entries:
+#     for entry in entries:
+#         if entry.is_file():
+#             img=open_image(entry.path)
+#             img_matrix=np.array(img)
+#             U, S, V=np.linalg.svd(img_matrix,full_matrices=False)
+#             S=np.diag(S)
+
+#             plt.figure()
+#             plt.title("Valores Singulares")
+#             plt.semilogy(np.diag(S))
+#             plt.savefig(f'Plots/singular_values_{entry.name}')
+
+#             plt.figure()
+#             plt.title('Soma cumulativa dos valores singulares')
+#             plt.plot(np.cumsum(np.diag(S))/np.sum(np.diag(S)))
+#             plt.savefig(f'Plots/cumulative_{entry.name}')
+
+
+
+
+# red_channel, green_channel, blue_channel = split_image(open_image('img_for_compression/bike.jpg'))
+# r=compress_channel(red_channel, 0.2)
+# g=compress_channel(green_channel, 0.2)
+# b=compress_channel(blue_channel, 0.2)
+# combine_image(r,g,b).save(f"compressed_images/bike_0.2rgb.jpg")
+
+
+# img=open_image_bw('img_for_compression/bike.jpg')
+# compressed=compress_channel(img, 0.5)
+
+U, S, V=np.linalg.svd(open_image_bw('img_for_compression/bike.jpg'),full_matrices=False)
+S=np.diag(S)
+
+plt.figure()
+plt.title("Valores Singulares")
+plt.semilogy(np.diag(S))
+plt.savefig(f'Plots/singular_values_bike.jpg')
+
+plt.figure()
+plt.title('Soma cumulativa dos valores singulares')
+plt.plot(np.cumsum(np.diag(S))/np.sum(np.diag(S)))
+plt.savefig(f'Plots/bike_cumulative.jpg')
